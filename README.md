@@ -14,3 +14,16 @@ run
 python webshow.py
 ```
 to see the website display
+
+## code for solve cube
+
+input：
+```
+python solve.py DRLUUBFBRBLURRLRUBLRDDFDLFUFUFFDBRDUBRUFLLFDDBFLUBLRBD
+```
+
+output: two strings
+```
+DDrdFFBDRRDDrFFdFFuBBLLUUDRRU
+urrduullbbUffDffRddrrdbffDRdd
+```
