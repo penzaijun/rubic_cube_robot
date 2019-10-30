@@ -2,6 +2,8 @@ import kociemba
 import sys
 
 # input：python solve.py DRLUUBFBRBLURRLRUBLRDDFDLFUFUFFDBRDUBRUFLLFDDBFLUBLRBD
+
+
 cube = sys.argv[1]
 solution = kociemba.solve(cube.replace(' ',''))
 # solution = "L' B' U R' L U2 D2 F' R' B' D R2 U2 F2 L2 F2 U2 L2 U"
