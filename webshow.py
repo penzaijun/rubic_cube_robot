@@ -2,12 +2,15 @@ import os
 from selenium import webdriver
 import re
 import time
+from solve import solve
 
 driver=webdriver.Chrome()
 driver.get(os.path.join(os.getcwd(),'step6.html'))
 
-stepArr = 'DDrdFFBDRRDDrFFdFFuBBLLUUDRRU'  #给定的还原序列
+cube = 'DRLUUBFBRBLURRLRUBLRDDFDLFUFUFFDBRDUBRUFLLFDDBFLUBLRBD'
+#stepArr = 'DDrdFFBDRRDDrFFdFFuBBLLUUDRRU'  #给定的还原序列
 
+'''
 shuffleArr = stepArr[::-1]
 shuffleArr = list(shuffleArr)
 for i in range(len(shuffleArr)):
@@ -17,6 +20,21 @@ for i in range(len(shuffleArr)):
     else:
         shuffleArr[i] = ss.upper()
 
+shuffleArr = str(shuffleArr)
+shuffleArr = re.sub('\'','',shuffleArr)
+shuffleArr = re.sub('\"','',shuffleArr)
+'''
+
+stepArr, shuffleArr = solve(cube)
+
+shuffleArr = stepArr[::-1]
+shuffleArr = list(shuffleArr)
+for i in range(len(shuffleArr)):
+    ss = shuffleArr[i]
+    if ss >='A' and ss <='Z':
+        shuffleArr[i] = ss.lower()
+    else:
+        shuffleArr[i] = ss.upper()
 shuffleArr = str(shuffleArr)
 shuffleArr = re.sub('\'','',shuffleArr)
 shuffleArr = re.sub('\"','',shuffleArr)
