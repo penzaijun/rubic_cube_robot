@@ -35,6 +35,7 @@ class Rubic_MCU(object):
 
         def __init__(self):
             ms=Rubic_MCU.Motor_Sequence.Motor_Status
+            self.first_flag=True
             self.index = 0
             self.Motor_A_seq = (ms.forward, ms.forward, ms.stop, ms.backward, ms.backward, ms.backward, ms.stop, ms.forward)
             self.Motor_B_seq = (ms.stop, ms.forward, ms.forward, ms.forward, ms.stop, ms.backward, ms.backward, ms.backward)
@@ -50,7 +51,13 @@ class Rubic_MCU(object):
 
     def __init__(self):
         self.board = Arduino("COM3")
-        self.Motor_Sequence=Rubic_MCU.Motor_Sequence()
+        self.Motor_Sequence=[Rubic_MCU.Motor_Sequence() for i in range(6)]
+        self.Motor_Port_dict=dict([(Rubic_MCU.Motor_Port.motor_L, 0),
+                                   (Rubic_MCU.Motor_Port.motor_R, 1),
+                                   (Rubic_MCU.Motor_Port.motor_U, 2),
+                                   (Rubic_MCU.Motor_Port.motor_D, 3),
+                                   (Rubic_MCU.Motor_Port.motor_F, 4),
+                                   (Rubic_MCU.Motor_Port.motor_B, 5)])
         data = [('F2', (Rubic_MCU.Motor_Port.motor_F, 180)),
                 ('F',  (Rubic_MCU.Motor_Port.motor_F, 90)),
                 ('F\'',(Rubic_MCU.Motor_Port.motor_F, -90)),
@@ -61,7 +68,7 @@ class Rubic_MCU(object):
                 ('L',  (Rubic_MCU.Motor_Port.motor_L, 90)),
                 ('L\'',(Rubic_MCU.Motor_Port.motor_L, -90)),
                 ('R2', (Rubic_MCU.Motor_Port.motor_R, 180)),
-                ('R',  (Rubic_MCU.Motor_Port.motor_R, 90)),
+                ('R',  (Rubic_MCU.Motor_Port.motor_R, 90.9)),
                 ('R\'',(Rubic_MCU.Motor_Port.motor_R, -90)),
                 ('U2', (Rubic_MCU.Motor_Port.motor_U, 180)),
                 ('U',  (Rubic_MCU.Motor_Port.motor_U, 90)),
@@ -72,18 +79,24 @@ class Rubic_MCU(object):
         self.rubic_dict=dict(data)
 
     def turn(self,port_num,degree):
-        step_count=round(abs(degree)/1.8)
-        if degree>0:step_num=1
-        else:step_num=7
+        step_count=round(abs(degree)/1.8*2)
+        seq_num=self.Motor_Port_dict[port_num]
+        if degree>0:
+            step_num=1
+            #self.Motor_Sequence_clock.index=0
+        else:
+            step_num=7
+            #self.Motor_Sequence_counterclock.index=0
         #open port
         self.board.digital[port_num].write(1)
         for i in range(step_count):
-            self.board.digital[Rubic_MCU.Motor_Port.L298N_IN1] = self.Motor_Sequence.get_A_status()[0]
-            self.board.digital[Rubic_MCU.Motor_Port.L298N_IN2] = self.Motor_Sequence.get_A_status()[1]
-            self.board.digital[Rubic_MCU.Motor_Port.L298N_IN3] = self.Motor_Sequence.get_B_status()[0]
-            self.board.digital[Rubic_MCU.Motor_Port.L298N_IN4] = self.Motor_Sequence.get_B_status()[1]
-            self.Motor_Sequence.step(step_num)
-            time.sleep(0.04)
+            self.board.digital[Rubic_MCU.Motor_Port.L298N_IN1].write(self.Motor_Sequence[seq_num].get_A_status()[0])
+            self.board.digital[Rubic_MCU.Motor_Port.L298N_IN2].write(self.Motor_Sequence[seq_num].get_A_status()[1])
+            self.board.digital[Rubic_MCU.Motor_Port.L298N_IN3].write(self.Motor_Sequence[seq_num].get_B_status()[0])
+            self.board.digital[Rubic_MCU.Motor_Port.L298N_IN4].write(self.Motor_Sequence[seq_num].get_B_status()[1])
+            self.Motor_Sequence[seq_num].step(step_num)
+            time.sleep(0.01)
+
         # close port
         self.board.digital[port_num].write(0)
 
@@ -91,6 +104,16 @@ class Rubic_MCU(object):
         if isinstance(instruction,str) and instruction in self.rubic_dict.keys():
             self.turn(self.rubic_dict[instruction][0],self.rubic_dict[instruction][1])
         else: print("INVALID INSTRUCTION\n")
+
+
+solution = "B B B B B B B B B' B' B' B' B' B' B' B' "
+instruction=solution.split(' ')
+r=Rubic_MCU()
+r.turn(r.Motor_Port.motor_R,0)
+for ins in instruction:
+    print(ins)
+    r.rubic_instruction(ins)
+    time.sleep(1)
 
 
 
