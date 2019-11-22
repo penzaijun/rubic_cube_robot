@@ -14,6 +14,7 @@ var startFaceNo = 0;
 var currentFaceNo = 0;
 var endFaceNo = 3;
 var totalTime = 200;
+var iscamera = 0;
 
 
 //魔方转动的六个方向
@@ -563,6 +564,10 @@ function render(){
 	window.requestAnimFrame(render);
 }
 
+function ic(){
+	iscamera = 1;
+}
+
 //开始
 function threeStart() {
 	initThree();
@@ -601,9 +606,9 @@ function threeStart() {
 	//};
 
 	//自动还原一
-	//var $autoResetV2 = document.querySelector('#autoResetV2');
-	//$autoResetV2.addEventListener('click',function(){
-	//	autoResetV2()
+	//var $camera = document.querySelector('camera');
+	//$camera.addEventListener('click',function(){
+	//	ic();
 	//},false);
 
 	//随机旋转
@@ -612,6 +617,7 @@ function threeStart() {
 	//	randomRotate();
 	//},false);
 }
+
 
 //魔方操作结束
 function stopCube(){

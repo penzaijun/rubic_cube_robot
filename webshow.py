@@ -3,6 +3,7 @@ from selenium import webdriver
 import re
 import time
 from solve import solve
+from test import getcolor
 
 driver=webdriver.Chrome()
 driver.get(os.path.join(os.getcwd(),'step6.html'))
@@ -24,8 +25,9 @@ shuffleArr = str(shuffleArr)
 shuffleArr = re.sub('\'','',shuffleArr)
 shuffleArr = re.sub('\"','',shuffleArr)
 '''
-
+cube = getcolor(driver)
 stepArr, shuffleArr = solve(cube)
+
 
 shuffleArr = stepArr[::-1]
 shuffleArr = list(shuffleArr)
